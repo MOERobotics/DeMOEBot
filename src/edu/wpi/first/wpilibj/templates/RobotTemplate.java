@@ -3,6 +3,7 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Watchdog;
 
 public class RobotTemplate extends IterativeRobot {
     /**
@@ -32,12 +33,14 @@ public class RobotTemplate extends IterativeRobot {
         
     }
     public void autonomousPeriodic() {
-		
+	Watchdog.getInstance().feed();
     }
     public void teleopInit(){
         stopAll();
     }
     public void teleopPeriodic() {
+        Watchdog.getInstance().feed();
+        
         double Vx = input.getX();
 	double Vy = input.getY();
         double w = input.getTwist();
@@ -62,10 +65,13 @@ public class RobotTemplate extends IterativeRobot {
 	
     }
     public void testPeriodic() {
-	
+	Watchdog.getInstance().feed();
     }
     public void disabledInit(){
         
+    }
+    public void disabledPeriodic(){
+        Watchdog.getInstance().feed();
     }
     public void stopAll(){
             //shooter.set(0);
