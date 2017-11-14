@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <data xmlns="http://www.netbeans.org/ns/profiler/1" version="0.4"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/MOE%20Student/Documents/NetBeansProjects/Test/info.txt</file>
             <file>file:/C:/Users/MOE%20Student/Documents/NetBeansProjects/Test/src/edu/wpi/first/wpilibj/templates/RobotTemplate.java</file>
         </group>
     </open-files>

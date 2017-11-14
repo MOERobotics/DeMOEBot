@@ -43,23 +43,28 @@ public class RobotTemplate extends IterativeRobot {
         
         double Vx = input.getX();
 	double Vy = input.getY();
-        double w = input.getTwist();
-        System.out.println("x: "+Vx+"     y: "+Vy+"     w: "+w);
-        controlDrive(Vx, Vy, w);
+        double Vtwist = -input.getThrottle();
         
-        /*
-        boolean shooterOn = input.getRawButton(4);
-        boolean shooterOff = input.getRawButton(5);
-        double shooterSpeed = input.getZ();
+        double z = input.getZ();
+        
+        System.out.println("x: "+Vx+" y: "+Vy+" z: "+z+" q: "+Vtwist);
+       
+        controlDriveNoNorm(Vx, Vy, Vtwist);
+        
+        
+        boolean shooterOn = input.getRawButton(5);
+        boolean shooterOff = input.getRawButton(6);
+        double shooterSpeed = (z+1)/2;
         controlShooter(shooterOn, shooterOff, shooterSpeed);
         
-        boolean collectorIn = input.getRawButton(2);
-        boolean collectorOut = input.getRawButton(3);
-        controlCollectorAndScrew(collectorIn, collectorOut);
+        boolean collectorIn = input.getRawButton(7);
+        boolean collectorOut = input.getRawButton(8);
+        double collectorSpeed = 0.4;
+        controlCollectorAndScrew(collectorIn, collectorOut, collectorSpeed);
         
         boolean indexerOn = input.getTrigger();
         controlIndexer(indexerOn);
-        */
+        
     }
     public void testInit(){
 	
@@ -85,6 +90,7 @@ public class RobotTemplate extends IterativeRobot {
         final double[][]driveMat = new double[][]{
             {-1,  Math.sqrt(3), 1}, 
             {-1, -Math.sqrt(3), 1}, 
+            
             { 2,            0 , 1}
         };
         final double norm = 2 + Math.sqrt(3);
@@ -94,19 +100,63 @@ public class RobotTemplate extends IterativeRobot {
             drive[i].set(pow/norm);
         }
     }
-    /*
-    public void controlShooter(boolean on, boolean off, double speed){
-        if(on){
-            shooter.set(speed);
-        }else if(off){
-            shooter.set(0.0);
+    
+    public void controlDriveNoNorm(double x, double y, double w){
+        final double[][]driveMat = new double[][]{
+            {-1,  Math.sqrt(3), 1}, 
+            {-1, -Math.sqrt(3), 1}, 
+            
+            { 2,            0 , 1}
+        };
+        final double norm = 2 + Math.sqrt(3);
+        for(int i=0;i<3;i++){
+            double[]v = driveMat[i];
+            double pow = x*v[0] + y*v[1] + w*v[2];
+            drive[i].set(pow);
         }
     }
-    public void controlCollectorAndScrew(boolean in, boolean out){
-        collector.set(in?1.0:out?-1.0:0.0);
+    
+    public void controlDriveMaxNorm(double x, double y, double w){
+            final double[][]driveMat = new double[][]{
+                {-1,  Math.sqrt(3), 1}, 
+                {-1, -Math.sqrt(3), 1}, 
+                { 2,            0 , 1}
+            };
+            double[] power = new double[3];
+            for(int i=0;i<3;i++){
+                power[i] = x*driveMat[i][0] + y*driveMat[i][1] + w*driveMat[i][2]; 
+            }
+            double norm = largestOfThree(power[0],power[1],power[2]);
+
+            for(int i=0;i<3;i++){
+                    drive[i].set(power[i]/norm);
+            }
+        }
+
+    public double largestOfThree(double a, double b, double c){
+            return  1>(c>(a>b?a:b)?c:(a>b?a:b))?1:(c>(a>b?a:b)?c:(a>b?a:b));
+    }
+  boolean sticky = false;
+  
+    public void controlShooter(boolean on, boolean off, double speed){
+        if (on) {
+            sticky = true;
+        } else if (off) {
+            sticky = false;
+        }
+        if(!sticky){
+            shooter.set(0.0);
+        }else {
+            System.out.println(-speed);
+            shooter.set(-speed);
+        }
+    }
+    
+    public void controlCollectorAndScrew(boolean in, boolean out, double speed){
+        collector.set(in?speed:out?-speed:0.0);
     }
     public void controlIndexer(boolean on){
-        indexer.set(on?1.0:0.0);
+        indexer.set(on?0.4:0.01);
     }
-    */
+    
 }
